@@ -1,0 +1,7 @@
+/* miniprogram/pages/registryEvent/registryEvent.wxss */
+
+.weui-form-preview__svalue{
+    font-size: 14px;
+    color: rgb(123, 69, 211);
+    text-decoration: underline;
+}

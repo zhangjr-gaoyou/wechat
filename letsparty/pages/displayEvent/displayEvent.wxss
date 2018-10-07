@@ -1,0 +1,2 @@
+/* miniprogram/pages/displayEvent/displayEvent.wxss */
+.flex-wrp {display: flex;}

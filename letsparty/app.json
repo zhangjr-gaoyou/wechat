@@ -1,0 +1,17 @@
+{
+  "cloud": true,
+  "pages": [
+    "pages/index/index",
+    "pages/createEvent/createEvent",
+    "pages/displayEvent/displayEvent",
+    "pages/registryEvent/registryEvent",
+    "pages/displayAll/displayAll"
+  ],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "一起来呗",
+    "navigationBarTextStyle": "black"
+  }
+}

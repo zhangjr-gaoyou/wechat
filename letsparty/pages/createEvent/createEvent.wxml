@@ -1,0 +1,105 @@
+<!--createEvent.wxml-->
+<view class="page page__bd_spacing">
+  <view class="weui-toptips weui-toptips_warn" wx:if="{{havError}}">{{errMesg}} 
+  </view>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class="weui-cells__title">活动信息</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">名称</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" auto-focus placeholder="请输入活动名称" name="eventName"  bindinput="bindNameChange"/>
+        </view>
+      </view>
+      <!-- place -->
+      <view class="weui-cell weui-cell_input weui-cell_vcode">
+        <view class="weui-cell__hd">
+          <view class="weui-label">地点</view>
+        </view>
+        <view class="weui-cell__bd">
+          <textarea class="weui-textarea" auto-height="true" 
+                placeholder="请选择地址" 
+                name="eventPlace" wx:if="{{hasLocation === false}}" />
+          <!--
+          <text class="weui-text"
+                name="eventPlace" wx:if="{{hasLocation === true}}">
+            {{locationName}}
+          </text>
+          --> 
+          <view class="weui-cell__ft" name="eventPlace" wx:if="{{hasLocation === true}}">
+            {{locationName}}
+          </view>
+
+        </view>
+        <view class="weui-cell__ft">
+          <image class="weui-vcode-img" 
+             style="width: 48px;height: 48px" 
+             src="../../images/location.png" bindtap="chooseLocation"/>             
+        </view>
+      </view> 
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">开始日期</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date" value="{{startDate}}" name="startDate" start="{{startDay}}" end="{{endDay}}" bindchange="bindStartDateChange">
+            <view class="weui-input" name="startDate" >{{startDate}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">开始时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="time" value="{{startTime}}" name="startTime" start="{{startTime}}"  bindchange="bindStartTimeChange">
+            <view class="weui-input" name="startTime" >{{startTime}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">结束日期</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date" value="{{endDate}}" name="endDate" bindchange="bindEndDateChange">
+            <view class="weui-input" name="endDate">{{endDate}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">结束时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="time" value="{{endTime}}" name="endTime" start="{{endTime}}"  bindchange="bindEndTimeChange">
+            <view class="weui-input" name="endTime" >{{endTime}}</view>
+          </picker>
+        </view>
+      </view>
+
+    
+      <view class="weui-cells__title">活动介绍 </view>
+      <view class="weui-cells weui-cells_after-title">
+       
+        <view class="weui-cell weui-cell__bd">
+          <textarea class="weui-textarea" placeholder="请输入活动内容介绍...."                    name="eventDetails" style="height: 3.3em" />
+        </view>
+      </view>
+    
+
+    </view>
+    
+    <view class="btn-area">
+      <button class="weui-btn" type="primary" formType="submit">发起活动</button>
+      <button class="weui-btn" formType="reset">算了，下次吧！</button>
+    </view>
+
+  </form>
+</view>
