@@ -96,7 +96,7 @@
 
     </view>
     
-    <view class="btn-area">
+    <view class="btn-area" style="margin-top: 15rpx;">
       <button class="weui-btn" type="primary" formType="submit">发起活动</button>
       <button class="weui-btn" formType="reset">算了，下次吧！</button>
     </view>

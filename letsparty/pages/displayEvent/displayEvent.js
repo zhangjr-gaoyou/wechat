@@ -251,70 +251,6 @@ Page({
       });
       return;
     }
-    /*
-    qqmapsdk.calculateDistance({
-      from: {
-        latitude: that.data.currLatitude,
-        longitude: that.data.currLongitude,
-      },
-      to: [{
-        latitude: that.data.latitude,
-        longitude: that.data.longitude
-      }],
-
-      success: function (res2) {
-        console.log(res2);
-        if (res2.status == 0) {
-          if (res2.result.elements[0].distance > 1000) {
-
-            errCode = 1;
-            
-            wx.showModal({
-              content: '你的位置和活动地点的距离' + res2.result.elements[0].distance+'米,大于1000米，不能注册，请到达活动地点再注册',
-              showCancel: false,
-              success: function (res3) {
-                if (res3.confirm) {
-                  console.log('用户点击确定');
-                }
-              }
-            }); 
-            
-
-            console.log("exitFlag1:", app.globalData.exitFlag);
-
-          }
-
-        }
-        else {
-
-          errCode = 2;
-          
-          wx.showModal({
-            content: '不能计算你的位置和活动地点的距离，请稍后重试！',
-            showCancel: false,
-            success: function (res4) {                  
-              if (res4.confirm) {
-                console.log('用户点击确定')
-              }
-            }
-          }); 
-          
-
-
-        }
-      },
-
-      fail: function (res2) {
-        console.log(res2);
-      },
-      complete: function (res2) {
-        console.log('complete', res2);
-      }
-    });
-
-    
-    console.log("exitFlag3:", app.globalData.exitFlag);
-    */
 
     wx.showLoading();
     wx.cloud.callFunction({
@@ -323,7 +259,8 @@ Page({
       // 传递给云函数的参数
       data: {
         eventId: that.data.eventId,
-        userName: that.data.host,
+        //userName: that.data.host,
+        openid: app.globalData.openid,
       },
       success: res => {
         wx.hideLoading();
@@ -333,9 +270,6 @@ Page({
           duration: 2000,
         })
         console.log(res)
-        //wx.redirectTo({
-        //  url: '../index/index'
-        //})
 
       },
       fail: err => {

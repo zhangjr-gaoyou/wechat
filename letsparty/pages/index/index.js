@@ -9,7 +9,6 @@ Page({
     // add
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
-
     avatarUrl: './user-unlogin.png',
     nickName: '',
     userInfo: null,
@@ -22,14 +21,6 @@ Page({
 
   onLoad: function () {
 
-    /*
-    if (app.globalData.flag) {
-      wx.navigateBack({
-        delta:1
-      })
-    }
-    */
-
     var that = this;
 
     this.setData({
@@ -37,10 +28,10 @@ Page({
       icon60: base64.icon60,
     });
 
+   
+
     //add
     // 查看是否授权
-
-
     wx.getSetting({
       success: function (res) {
         if (res.authSetting['scope.userInfo']) {
@@ -164,7 +155,19 @@ Page({
 
 
                 var _userName = that.data.nickName;
+                // 获取openid
+                wx.cloud.callFunction({
+                  name: 'login',
+                  data: {},
+                  success: res => {
+                    console.log('[云函数] [login] user openid: ', res.result.userInfo.openId)
+                    app.globalData.openid = res.result.userInfo.openId
 
+                  },
+                  fail: err => {
+                    console.error('[云函数] [login] 调用失败', err)
+                  }
+                });
 
                 wx.showLoading();
 
@@ -172,8 +175,8 @@ Page({
                 const _ = db.command
                 db.collection('user-event').orderBy('startDate', 'desc')
                   .where({
-
-                    userName: _userName,
+                    //userName: _userName,
+                    openid: app.globalData.openid,
                     eventStatus: _.neq("结束"),
                   })
                   .get({
@@ -214,6 +217,59 @@ Page({
 
   bindGetUserInfo: function (e) {
     console.log(e.detail.userInfo)
+  },
+
+  onPullDownRefresh() {
+
+    var that = this;
+    wx.showToast({
+      title: 'loading...',
+      icon: 'loading'
+    })
+    //reload data
+    that.setData({
+      haveEvent: false,
+    });
+    const db = wx.cloud.database()
+    const _ = db.command
+    db.collection('user-event').orderBy('startDate', 'desc')
+      .where({
+        //userName: that.data.nickName,
+        openid: app.globalData.openid,
+        eventStatus: _.neq("结束"),
+      })
+      .get({
+        success: function (res) {
+          wx.hideLoading();
+          // res.data 是一个包含集合中有权限访问的所有记录的数据，不超过 20 条
+
+          if (res.data.length > 0) {
+
+            that.setData({
+              eventCount: res.data.length,
+              haveEvent: true,
+            });
+
+
+          }
+          that.setData({
+            events: res.data,
+          });
+          console.log('events', that.data.events)
+        }
+      });
+
+      wx.stopPullDownRefresh({
+        complete(res) {
+          wx.hideToast()
+          console.log(res, new Date())
+        }
+      });
+
+
+    
+    
+    console.log('onPullDownRefresh', new Date())
   },
 
 })

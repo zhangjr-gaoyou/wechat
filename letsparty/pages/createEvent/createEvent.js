@@ -45,7 +45,7 @@ Page({
     })
 
     console.log(that.data.startDate,that.data.endDate);
-    console.log('openid=',app.globalData.openid);
+    //console.log('openid=',app.globalData.openid);
   },
 
 
@@ -166,7 +166,8 @@ Page({
         endDate: e.detail.value.endDate,
         endTime: e.detail.value.endTime,
         opTime: now(),
-        eventDetails: e.detail.value.eventDetails
+        eventDetails: e.detail.value.eventDetails,
+        openid: app.globalData.openid
       },
       success: res => {
         // 在返回结果中会包含新创建的记录的 _id
@@ -174,18 +175,9 @@ Page({
           eventId: res._id,
 
         })
-        /*
-        wx.showToast({
-          title: '创建活动成功',
-          duration: 2000,
-        })
-        */
+        
         console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id)
-        /*
-        wx.navigateTo({
-          url: '../index/index',
-        })
-        */
+       
         //add user-event
         db.collection('user-event').add({
           data: {
@@ -201,7 +193,8 @@ Page({
             endDate: e.detail.value.endDate,
             endTime: e.detail.value.endTime,
             eventDetails: e.detail.value.eventDetails,
-            opTime: now()
+            opTime: now(),
+            openid: app.globalData.openid
           },
           success: res => {
             // 在返回结果中会包含新创建的记录的 _id        

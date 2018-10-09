@@ -1,0 +1,46 @@
+/* letsparty/pages/displayEventMore/displayEventMore.wxss */
+
+.weui-media-box__graythumb {
+ filter: grayscale(100%);
+}
+
+.container{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.delbtn {
+    background-color: #b4282d;
+    width: 90px;
+    height: 60px;
+    margin-left: 140rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    -webkit-transform: translateX(90px);
+    transform: translateX(90px);
+    -webkit-transition: all 1s;
+    transition: all 1s;
+  }
+
+
+  .content {
+    float: left;
+    width: 100%;
+    margin-right:0;
+    -webkit-transition: all 1s;
+    transition: all 1s;
+    -webkit-transform: translateX(90px);
+    transform: translateX(90px);
+    margin-left: -90px;
+    display: flex;
+  }
+
+   
+
+.touch-move-active .content, .touch-move-active .delbtn {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}

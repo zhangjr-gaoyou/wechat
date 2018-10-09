@@ -14,13 +14,24 @@ page {
     text-align: center;
 }
 
+.weui-grid__icon {
+  display: block;
+  width: 112px;
+  height: 112px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden
+
+}
+
 .weui-media-box__graythumb {
  
  filter: grayscale(100%);
 
 }
 .userinfo {
-  margin-top: 10rpx;
+  margin-top: 5rpx;
+  padding-top: 15rpx;
   height: 100%;
   width: 100%;
   background: #fff;

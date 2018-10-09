@@ -5,7 +5,8 @@
     "pages/createEvent/createEvent",
     "pages/displayEvent/displayEvent",
     "pages/registryEvent/registryEvent",
-    "pages/displayAll/displayAll"
+    "pages/displayAll/displayAll",
+    "pages/displayEventMore/displayEventMore"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

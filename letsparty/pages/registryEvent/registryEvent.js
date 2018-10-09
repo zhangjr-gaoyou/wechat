@@ -83,9 +83,6 @@ Page({
             event: res.data,
             'markers[0].latitude': res.data.latitude,
             'markers[0].longitude': res.data.longitude
-
-
-
           });
           console.log('event:', that.data.event)
         }
@@ -184,10 +181,94 @@ Page({
       });
     }
     
+    // 获取openid
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        console.log('[云函数] [login] user openid: ', res.result.userInfo.openId)
+        app.globalData.openid = res.result.userInfo.openId;
+
+        const db = wx.cloud.database()
+
+        db.collection('user-event').where({
+          //userName: that.data.nickName,
+          openid: app.globalData.openid,
+          eventId: that.data.eventId
+
+        }).count({
+          success: function (res) {
+            console.log(res.total)
+            if (res.total < 1) {
+              db.collection('user-event').add({
+                data: {
+                  userName: that.data.nickName,
+                  userAvatar: that.data.userAvatar,
+                  eventId: that.data.eventId,
+                  userRole: "参与者",
+                  realName: that.data.realName,
+                  userPhone: that.data.userPhone,
+                  eventName: that.data.event.eventName,
+                  eventPlace: that.data.event.eventPlace,
+                  eventStatus: "已注册",
+                  startDate: that.data.event.startDate,
+                  startTime: that.data.event.startTime,
+                  endDate: that.data.event.endDate,
+                  endTime: that.data.event.endTime,
+                  eventDetails: that.data.event.eventDetails,
+                  opTime: now(),
+                  openid: app.globalData.openid
+
+                },
+                success: res => {
+                  // 在返回结果中会包含新创建的记录的 _id
+                  that.setData({
+                    regId: res._id,
+
+                  })
+                  wx.showToast({
+                    title: '注册成功',
+                  })
+                  console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id)
+                  wx.reLaunch({
+                    url: '../index/index',
+                  })
+                },
+                fail: err => {
+                  wx.showToast({
+                    icon: 'none',
+                    title: '注册失败'
+                  })
+                  console.error('[数据库] [新增记录] 失败：', err)
+                }
+              });
+
+            }
+            else {
+              wx.showToast({
+                duration: 3000,
+                title: '你已注册该活动！'
+              })
+              wx.reLaunch({
+                url: '../index/index',
+              })
+            }
+
+          }
+        })
+
+      },
+      fail: err => {
+        console.error('[云函数] [login] 调用失败', err)
+      }
+    });
+
+    /*
     const db = wx.cloud.database()
     
     db.collection('user-event').where({
-      userName: that.data.nickName,
+      //userName: that.data.nickName,
+      openid: app.globalData.openid,
       eventId: that.data.eventId
 
     }).count({
@@ -210,7 +291,8 @@ Page({
               endDate: that.data.event.endDate,
               endTime: that.data.event.endTime,
               eventDetails: that.data.event.eventDetails,
-              opTime: now()
+              opTime: now(),
+              openid: app.globalData.openid
 
             },
             success: res => {
@@ -238,7 +320,6 @@ Page({
 
         }
         else{
-
           wx.showToast({
             duration: 3000,
             title: '你已注册该活动！'
@@ -250,7 +331,7 @@ Page({
 
       }
     })
-
+    */
     
 
     
