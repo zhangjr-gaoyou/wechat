@@ -129,6 +129,8 @@ Page({
     //返回角度 /Math.atan()返回数字的反正切值
     return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
   },
+
+
   touchstart(e) {
     //开始触摸时 重置所有删除
     this.data.events.forEach(function (v, i) {
@@ -166,6 +168,13 @@ Page({
       events: this.data.events
     })
   },
+
+  touchend(e) {
+  
+  
+  },
+
+
   //删除事件
   delEvent(e) {
     this.data.events.splice(e.currentTarget.dataset.index, 1)

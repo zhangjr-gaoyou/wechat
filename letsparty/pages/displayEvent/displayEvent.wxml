@@ -1,10 +1,19 @@
 <view class="page">
-  <view class="page__hd">
+  <view class="page__hd" style="padding:20rpx 60rpx 20rpx 60rpx">
     <view class="page__title">{{event.eventName}}</view>
     <view class="page__desc">{{event.eventDetails}}</view>
   </view>
-  <view class="page__bd">
-    <view class="weui-form-preview">
+  <view class="weui-navbar">
+    <block wx:for="{{tabs}}" wx:key="*this">
+      <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+          <view class="weui-navbar__title">{{item}}</view>
+      </view>
+    </block>
+    <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+  </view>
+
+  <view class="page__bd" style='padding:40rpx;padding-top:0;'>
+    <view wx-if="{{activeIndex==0? true:false}}" class="weui-form-preview">
       <!--
             <view class="weui-form-preview__hd">
                 <view class="weui-form-preview__value"> 活动信息 </view>
@@ -57,5 +66,115 @@
       </view>
 
     </view>
+
+    <view wx-if="{{activeIndex==1? true:false}}" style="padding-bottom:25rpx">
+     
+        <view class="weui-panel weui-panel_access
+                      style="margin-top:10rpx;">
+          <view class="weui-cells" style="margin-top:0;">
+            <view class="weui-cell">
+              <view class="weui-cell__bd">
+                <view class="weui-uploader">
+                  <view class="weui-uploader__hd">
+                    <view class="weui-uploader__title" style="color: #b2b2b2;font-size: 32rpx;">最多可使用9张图片</view>
+                    <view class="weui-uploader__info" style="font-size: 32rpx;">{{imageList.length}}/{{imageCount}}</view>
+                  </view>
+                  <view class="weui-uploader__bd">
+                    <view class="weui-uploader__files">
+                      <block wx:for="{{imageList}}" wx:for-item="image" wx:for-index="idx">
+                        <view class="weui-uploader__file weui-cell__hd"
+                               style="position: relative;">
+
+                          <image class="weui-uploader__img" 
+                                 style="width: 184rpx;height: 184rpx; " src="{{image}}" data-src="{{image}}" bindtap="previewImage" id ="{{idx}}" bindlongpress="longpressImage"></image>
+                          <view class="weui-badge weui-badge_dot" style="position: absolute;top: 5rpx;right: 5rpx;"
+                          wx-if="{{idx<cloudImageCount?true:flase}}">
+                          </view>
+
+                        </view>
+                      </block>
+                    </view>
+                    <view wx-if="{{ imageList.length < 9 ? true:false }}"class="weui-uploader__input-box">
+                      <view class="weui-uploader__input" bindtap="chooseImage"></view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+          </view>
+
+          <block wx-if="{{haveUnsendImage}}">
+            <view class="weui-panel__bd weui-media-box__info" style="margin:25rpx 50rpx 0rpx 50rpx">
+                <button type="primary" plain="true" bindtap='uploadImages'>
+                    上传图片
+                </button>
+              </view>
+      </block>
+
+        
+        </view>
+      
+      </view>
+     </view> 
+   
+
+    <view wx-if="{{activeIndex==2? true:false}}"  style="padding-bottom:25rpx">
+      <block wx-if="{{haveNotice}}" 
+                    wx:key="_id"
+                    wx:for-items="{{eventNotices}}" 
+                    wx:for-index="idx" 
+                    wx:for-item="eventNotice">
+        <view class="weui-panel weui-panel_access
+                      style="margin-top:10rpx;">
+          <view class="weui-panel__hd">
+            <view class="weui-media-box__info">
+              <view class="weui-media-box__info__meta">{{eventNotice.userName}}</view>
+              <view class="weui-media-box__info__meta">{{eventNotice.opTime}}</view>
+            </view>
+          </view>
+          <view class="weui-panel__bd">
+            <view class="weui-media-box weui-media-box_text">
+              <view class="weui-media-box__desc2">{{eventNotice.noticeDetails}}</view>
+              
+            </view>
+            
+          </view> 
+
+        </view>
+      </block>
+      
+      <view class="weui-panel weui-panel_access
+                      style="margin-top:10rpx;"
+                      wx-if="{{userRole=='组织者'? true:false && !newNoticeMode}}"
+                     >
+          <view class="weui-panel__bd" >
+            <view class="image-plus image-plus-nb" style="margin:10rpx auto;" bindtap="createNotice">
+              <view class="image-plus-horizontal"></view>
+              <view class="image-plus-vertical"></view>
+            </view>
+          </view>
+      </view>
+
+      <block wx-if="{{newNoticeMode}}">
+      <form wx-if="{{userRole=='组织者'? true:false}}" bindsubmit="pubNoticeTap">
+        <view  class="weui-panel weui-panel_access "  style="margin-top:20rpx" >
+          <view class="weui-panel__bd ">
+            <view class="weui-media-box weui-media-box_text textarea-wrp"
+                 >
+              <textarea class="weui-media-box__desc2" placeholder="输入新的通知！"  name="noticeDetails" auto-height auto-focus />
+            </view>
+          </view>
+        </view>
+        <view class="weui-panel__bd weui-media-box__info" style="margin:25rpx 50rpx 0rpx 50rpx">
+          <button type="primary" plain="true" formType="submit">
+              发布通知
+          </button>
+        </view>
+      </form>
+      </block>
+  
+    </view>
+
+          
   </view>
+
 </view>

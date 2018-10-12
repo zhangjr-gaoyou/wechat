@@ -1,6 +1,6 @@
 <!--letsparty/pages/displayEventMore/displayEventMore.wxml-->
 
-<view class="page page__bd_spacing">
+<view class="page page__bd_spacing" >
 
   <!--标题栏 -->
 
@@ -13,10 +13,13 @@
       <view class="weui-panel__hd">我的活动</view>
       
  
-      <view class="weui-panel__bd {{event.isTouchMove ? 'touch-move-active' : ''}}" wx:key="{{index}}" wx:for-items="{{events}}" wx:for-item="event"   data-index="{{index}}"  bindtouchstart="touchstart" bindtouchmove="touchmove">
+      <view class="weui-panel__bd {{event.isTouchMove ? 'touch-move-active' : ''}}" wx:key="{{index}}" wx:for-items="{{events}}" wx:for-item="event"   data-index="{{index}}"  
+        bindtouchstart="touchstart" 
+        bindtouchmove="touchmove"
+        bindtouchend='touchend'>
         <navigator url="../../pages/displayEvent/displayEvent?eventId={{event.eventId}}&userRole={{event.userRole}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active"
              >
-          <view class="content">
+          <view class="content {{event.itemStyle}}" >
             <view class="weui-media-box__hd weui-media-box__hd_in-appmsg" wx-if="{{event.userRole=='组织者'? true:false}}">
               <image class="weui-media-box__thumb weui-media-box__graythumb" wx-if="{{event.eventStatus=='结束'? true:false}}" src="../../images/logo-pic2.png" />
 
