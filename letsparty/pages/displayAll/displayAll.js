@@ -9,6 +9,8 @@ Page({
     inputVal: "",
     eventId: null,
   },
+
+
   showInput: function () {
     this.setData({
       inputShowed: true
@@ -27,6 +29,7 @@ Page({
 
     console.log('clear Input');
   },
+
   inputTyping: function (e) {
     this.setData({
       inputVal: e.detail.value
@@ -130,10 +133,20 @@ Page({
       console.log(that.data.events[j]);
       if (that.data.events[j].userName == ctx.currentTarget.id){
 
+
+        if(that.data.events[j].userRole=='参与者'){
+          that.setData({
+
+            tapUserName: that.data.events[j].realName,
+            tapUserPhone: that.data.events[j].userPhone,
+            
+
+          });
+        }
         that.setData({
 
-          tapUserName: that.data.events[j].realName,
-          tapUserPhone: that.data.events[j].userPhone
+          tapUserNickName: that.data.events[j].userName,
+          tapUserId: that.data.events[j].openid,
 
         });
         
@@ -146,6 +159,7 @@ Page({
 
 
     wx.showActionSheet({
+
       itemList: ['成员信息', '呼叫', '跟踪位置'],
       success(e) {
         console.log(e.tapIndex)
@@ -169,10 +183,18 @@ Page({
             
             break;
           case 2:
-            wx.showToast({
-              title: '敬请等待！',
-              duration: 3000
-            });
+
+            let url = '../traceLocation/traceLocation' +
+              '?eventId=' + that.data.eventId +
+              '&guestName=' + that.data.tapUserNickName +
+              '&guestId=' + that.data.tapUserId;
+
+
+            console.log('url:',url);
+
+            wx.navigateTo({
+              url: url,
+            })
             break;  
           default:
             

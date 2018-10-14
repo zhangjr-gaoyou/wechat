@@ -14,6 +14,7 @@ var sliderWidth = 96;
 const sourceType = [['camera'], ['album'], ['camera', 'album']]
 const sizeType = [['compressed'], ['original'], ['compressed', 'original']]
 
+
 Page({
 
   /**
@@ -80,6 +81,10 @@ Page({
       userRole: options.userRole,
       host: app.globalData.userInfo.nickName,
 
+    })
+
+    wx.showLoading({
+      title: '加载中...',
     })
 
     wx.getSystemInfo({
@@ -192,6 +197,9 @@ Page({
     qqmapsdk = new QQMapWX({
       key: 'LAQBZ-TJ3RU-I2ZVQ-4Y7VF-PALIF-APB2R'
     });
+
+    wx.hideLoading();
+
   },
 
   /**
@@ -249,7 +257,8 @@ Page({
 
     // 判断距离是否在附近
 
-   
+    wx.showLoading();
+
     console.log(that.data.longitude, that.data.latitude);
     console.log(that.data.currLongitude, that.data.currLatitude);
     console.log('exitFlag=', that.data.exitFlag);
@@ -287,7 +296,6 @@ Page({
       return;
     }
 
-    wx.showLoading();
     wx.cloud.callFunction({
       // 要调用的云函数名称
       name: 'updateSignin',
@@ -302,7 +310,7 @@ Page({
         wx.showToast({
           icon: 'success',
           title: '签到成功！',
-          duration: 2000,
+          duration: 1000,
         })
         console.log(res)
 
@@ -318,6 +326,20 @@ Page({
       }
     })
 
+
+  },
+
+  openLocation: function(){
+
+    var that = this;
+    console.log('tap the map');
+
+    wx.openLocation({
+      longitude: that.data.event.longitude,
+      latitude: that.data.event.latitude,
+      name: that.data.event.eventName,
+      address: that.data.event.eventAddress,
+    })
 
   },
 
@@ -393,6 +415,27 @@ Page({
       return
     }
 
+    wx.showLoading({
+      title: '发送消息...',
+    })
+
+
+    var notice = {};
+    notice.userName = app.globalData.userInfo.nickName;
+
+    notice.openid = app.globalData.openid;
+    notice.eventId = that.data.eventId;
+    notice.opTime = now();
+    notice.noticeDetails = e.detail.value.noticeDetails;
+
+    console.log("push notice", notice);
+    that.data.eventNotices.push(notice);
+    that.setData({
+      eventNotices: that.data.eventNotices,
+      haveNotice: true,
+      newNoticeMode: false,
+    })
+
     const db = wx.cloud.database()
 
     // add event
@@ -405,34 +448,20 @@ Page({
         noticeDetails: e.detail.value.noticeDetails,
       },
       success: res => {
-        var notice={};
-        notice.userName = app.globalData.userInfo.nickName;
-
-        notice.openid = app.globalData.openid;
-        notice.eventId = that.data.eventId;
-        notice.opTime = now();
-        notice.noticeDetails = e.detail.value.noticeDetails;
-
-        console.log("push notice", notice);
-
-        this.data.eventNotices.push(notice);
-        that.setData({
-          eventNotices: this.data.eventNotices,
-          newNoticeMode: false,
-
-        })
+        wx.hideLoading();
 
         wx.showToast({
           icon: 'success',
           title: '创建通知成功',
-          duration: 3000
+          duration: 1000
         })
         console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id)
-        
-        
+          
 
       },
       fail: err => {
+        wx.hideLoading();
+
         wx.showToast({
           icon: 'none',
           title: '创建通知失败',
@@ -503,6 +532,13 @@ Page({
         break;
       case '1':
         wx.showLoading();
+
+        that.setData({
+          disableUpload: false,
+        })
+        
+        console.log('Tab tap disableUpload', that.data.disableUpload)
+
         console.log('query images:', that.data.eventId);
         db.collection('event-image').orderBy('opTime', 'asc')
           .where({
@@ -629,6 +665,8 @@ Page({
   chooseImage() {
     const that = this
 
+
+
     let imgcnt = this.data.imageCount - this.data.cloudImageCount
     console.log(imgcnt)
 
@@ -650,9 +688,6 @@ Page({
         for (var j = 0, len1 = res.tempFilePaths.length; j < len1; j++) {
           dupFlag = false;
           for (var i = 0, len2 = that.data.imageList.length; i< len2; i++){
-            console.log('compare:', 
-               res.tempFilePaths[j].substr(res.tempFilePaths[j].lastIndexOf('/') + 1), 
-               that.data.imageList[i].substr(that.data.imageList[i].lastIndexOf('/') + 1))
             if ( res.tempFilePaths[j].substr(res.tempFilePaths[j].lastIndexOf('/') + 1) == that.data.imageList[i].substr(that.data.imageList[i].lastIndexOf('/') + 1)){
               dupFlag = true;
               wx.showToast({
@@ -684,7 +719,6 @@ Page({
 
           that.setData({
             haveUnsendImage: true,
-
           })
         }
       }
@@ -732,7 +766,7 @@ Page({
             },
             fail: err => {
               // handle error
-              console.log(err);
+              console.error;
               return
             }
           })
@@ -805,12 +839,141 @@ Page({
         console.log(res);
       }
     })
-    
-  
   },
+
+
+
+  callAsyncFunc: function (func) {
+
+    setTimeout(function () {
+      func();
+    }, 10);
+
+  },
+
+  uploadFunc: function () {
+
+    var that = this;
+
+    wx.showLoading({
+      title: '图片上传中...',
+    })
+
+    console.log('upload images', that.data.imageList);
+    console.log('image count', that.data.cloudImageCount);
+    var startIdx = that.data.cloudImageCount;
+
+    var uploadTasks=[];
+    
+
+    for (var j = startIdx, len = that.data.imageList.length; j < len; j++) {
+      console.log(that.data.imageList[j]);
+      let fileName = that.data.imageList[j].substr(that.data.imageList[j].lastIndexOf('/') + 1);
+
+      console.log(fileName)
+
+      const uploadTask = wx.cloud.uploadFile({
+        cloudPath: that.data.eventId + '/' + fileName, // 上传至云端的路径
+        filePath: that.data.imageList[j], // 小程序临时文件路径
+        success: res => {
+          // 返回文件 ID
+          console.log(res);
+          // add record
+          const db = wx.cloud.database()
+
+          db.collection('event-image').add({
+            data: {
+              userName: app.globalData.userInfo.nickName,
+              openid: app.globalData.openid,
+              eventId: that.data.eventId,
+              opTime: now(),
+              fileId: res.fileID,
+            },
+            success: res => {
+
+              that.data.fileList.push(res.fileID);
+
+              that.setData({
+                cloudImageCount: that.data.imageList.length,
+                fileList: that.data.fileList,
+                haveUnsendImage: false,
+
+              })
+
+              wx.hideLoading();
+              wx.showToast({
+                icon: 'success',
+                title: '图片上传成功！',
+                duration: 1000
+              })
+              console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id)
+            },
+            fail: err => {
+              wx.hideLoading();
+
+              wx.showToast({
+                icon: 'none',
+                title: '图片上传失败',
+                duration: 3000
+              })
+              console.error('[数据库] [创建通知] 失败：', err)
+            }
+          })
+        },
+        fail: err => {
+          wx.hideLoading();
+          console.log(err);
+        }
+        
+      })
+
+      
+      uploadTask.onProgressUpdate((res) => {
+        console.log('上传进度', res)
+        
+        if(res.progress == 100){
+          uploadTasks.push(1)
+          
+          
+          
+
+          if (uploadTasks.length == (that.data.imageList.length - startIdx)){
+
+            that.setData({
+              disableUpload: false,
+            });
+
+            console.log('Check OK disableUpload', that.data.disableUpload)
+
+          }
+
+        }
+      })
+    }
+
+
+
+    
+
+  },
+
   uploadImages: function (e) {
     
     var that = this;
+
+    
+    that.setData({
+      disableUpload: true,
+    });
+    
+    console.log('uploadImages disableUpload', that.data.disableUpload)
+
+    this.callAsyncFunc(this.uploadFunc);
+
+    /*
+    wx.showLoading({
+      title: '图片上传中...',
+    })
 
     console.log('upload images', that.data.imageList);
     console.log('image count', that.data.cloudImageCount);
@@ -827,9 +990,7 @@ Page({
         filePath: that.data.imageList[j], // 小程序临时文件路径
         success: res => {
           // 返回文件 ID
-          console.log(res);
-
-          
+          console.log(res); 
           // add record
           const db = wx.cloud.database()
 
@@ -852,15 +1013,17 @@ Page({
 
               })
               
-
+              wx.hideLoading();
               wx.showToast({
                 icon: 'success',
                 title: '图片上传成功！',
-                duration: 3000
+                duration: 1000
               })
               console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id)
             },
             fail: err => {
+              wx.hideLoading();
+
               wx.showToast({
                 icon: 'none',
                 title: '图片上传失败',
@@ -871,11 +1034,19 @@ Page({
           })
         },
         fail: err => {
+          wx.hideLoading();
           console.log(err);
         }
       })
     }
 
+    that.setData({
+      disableUpload: false,
+    })
+    */
+
+
   },
+
 
 })

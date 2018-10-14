@@ -55,17 +55,6 @@ Page({
           wx.hideLoading();
           console.log(err);
         },
-        
-        /*
-        complete: function(res) {
-          console.log('complete',res);
-          wx.hideLoading();
-       
-          that.setData({
-            events: res.data,
-          });
-        }
-        */
 
       })
 

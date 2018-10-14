@@ -12,6 +12,7 @@ App({
 
     this.globalData = {}
 
+    //以下为版本更新处理
     const updateManager = wx.getUpdateManager()
 
     updateManager.onCheckForUpdate(function (res) {
@@ -41,8 +42,6 @@ App({
         title: '新版本下载失败!',
       })
     })
-
-
 
   }
 })

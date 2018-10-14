@@ -16,7 +16,6 @@ Page({
     events: null,
     haveEvent: false,
     authed: false,
-
   },
 
   onLoad: function () {
@@ -28,7 +27,9 @@ Page({
       icon60: base64.icon60,
     });
 
-   
+    wx.showLoading({
+      title: '加载中...',
+    })
 
     //add
     // 查看是否授权
@@ -71,8 +72,7 @@ Page({
 
               var _userName = that.data.nickName;
 
-              wx.showLoading();
-
+            
               const db = wx.cloud.database()
               const _ = db.command
               db.collection('user-event').orderBy('startDate', 'desc')
@@ -82,22 +82,16 @@ Page({
                 })
                 .get({
                   success: function (res) {
-                    wx.hideLoading();
-                    // res.data 是一个包含集合中有权限访问的所有记录的数据，不超过 20 条
                     
                     if (res.data.length > 0) {
-
                       that.setData({
                         eventCount: res.data.length,
                         haveEvent: true,
                       });
-
-
                     }
                     that.setData({
                       events: res.data,
                     });
-
 
                     console.log('events', that.data.events)
                   }
@@ -107,13 +101,12 @@ Page({
           })
         }
         else {
-
           console.log("not auth");
         }
       }
     });
 
-
+    wx.hideLoading();
 
 
 
@@ -264,10 +257,7 @@ Page({
           wx.hideToast()
           console.log(res, new Date())
         }
-      });
-
-
-    
+      }); 
     
     console.log('onPullDownRefresh', new Date())
   },

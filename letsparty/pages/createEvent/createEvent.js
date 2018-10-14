@@ -51,7 +51,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '使用原生地图选择位置',
+      title: '一起来活动吧',
       path: '/pages/createEvent/createEvent'
     }
   },

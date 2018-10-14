@@ -1,0 +1,57 @@
+<!--letsparty/pages/reportLocation/reportLocation.wxml-->
+<view class="page page__bd_spacing">
+  <view class="weui-toptips weui-toptips_warn" wx:if="{{havError}}">{{errMesg}}      </view>
+  <view class="page__hd">
+  
+    <view class="page__title">{{event.eventName}}</view>
+    <view class="page__desc">亲爱的，{{hostName}} 请求跟踪你的位置
+      <!--<open-data type="userNickName"></open-data>-->
+      <!--<view class="weui-form-preview__value">{{host}} 邀请你参加</view>-->
+      
+    </view>    
+    
+  </view>
+  <view class="page__bd">
+    <view class="weui-form-preview">
+      <view class="weui-form-preview__bd">
+        
+        
+        <view class="weui-form-preview__item">
+         
+          <map id="eventMap" 
+              style="width: 100%; height: 300px;" 
+              latitude="{{latitude}}" 
+              longitude="{{longitude}}" 
+              markers="{{markers}}"
+              include-points="{{markers}}"
+              polyline="{{polyline}}"
+              show-location= "{{showLocation}}"
+              enable-scroll= "{{enableScroll}}">
+          </map>
+        </view>
+      </view>
+
+      <!--debug info-->
+      <view class="weui-cells__tips weui-cells__tips-ext" wx:if="{{traceFlag}}" >
+      {{traceStatus}} </view>
+
+      <view class="weui-form-preview__ft">
+        <button wx-if="{{!reportFlag}}" class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" bindtap='onQuit'>
+          退出
+        </button>
+        <button wx-if="{{reportFlag}}" class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" bindtap='quitReport'>
+          退出上报
+        </button>
+        <button class="weui-form-preview__btn weui-form-preview__btn_primary" 
+              hover-class="weui-form-preview__btn_active" 
+              open-type="getUserInfo" lang="zh_CN"  disabled='{{disableReport}}'
+              bindgetuserinfo="agreeSubmit">
+          上报
+        </button>
+        
+      </view>
+
+    </view>
+  
+  </view>
+</view>

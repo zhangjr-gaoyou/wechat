@@ -31,7 +31,9 @@
         <view class="weui-form-preview__item">
           <view class="weui-form-preview__label">地点</view>
           <view class="weui-form-preview__value">{{event.eventPlace}}</view>
-          <map id="eventMap" style="width: 100%; height: 300px;" latitude="{{event.latitude}}" longitude="{{event.longitude}}" markers="{{markers}}" enable-scroll="{{enableScroll}}" show-location="{{showLocation}}"></map>
+          <map id="eventMap" style="width: 100%; height: 300px;" latitude="{{event.latitude}}" longitude="{{event.longitude}}" markers="{{markers}}" enable-scroll="{{enableScroll}}" show-location="{{showLocation}}"
+          bindtap="openLocation"
+          ></map>
         </view>
 
 
@@ -49,7 +51,7 @@
 
       <view class="weui-form-preview__ft">
 
-        <button class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" bindtap="eventCloseTap"
+        <button class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" bindtap="eventCloseTap" style="padding-left:2px;"
         wx-if="{{userRole=='组织者'? true:false}}">
           活动结束
         </button>
@@ -104,11 +106,11 @@
 
           <block wx-if="{{haveUnsendImage}}">
             <view class="weui-panel__bd weui-media-box__info" style="margin:25rpx 50rpx 0rpx 50rpx">
-                <button type="primary" plain="true" bindtap='uploadImages'>
+                <button type="primary" disabled="{{disableUpload}}" plain="true" bindtap='uploadImages'>
                     上传图片
                 </button>
               </view>
-      </block>
+          </block>
 
         
         </view>
